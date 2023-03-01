@@ -1,28 +1,28 @@
-const base64url = require("base64url");
+//const base64url = require("base64url");
 var cors = require('cors')
 const express = require("express");
 const expressSession = require("express-session");
 var bodyParser = require('body-parser')
 const path = require("path");
-const indexController = require("./index");
-const userController = require("./user");
+//const indexController = require("./index");
+//const userController = require("./user");
 
-const { getConfiguredPassport, passportController } = require("./passport");
+//const { getConfiguredPassport, passportController } = require("./passport");
 
 const app = express();
 
-const session = {
-  secret: "someSecret",
-  cookie: {},
-  resave: false,
-  saveUninitialized: false,
-};
+// const session = {
+//   secret: "someSecret",
+//   cookie: {},
+//   resave: false,
+//   saveUninitialized: false,
+// };
 app.use(cors())
 app.use(bodyParser.json())
-app.use(expressSession(session));
+//app.use(expressSession(session));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.use("/", indexController);
+//app.use("/", indexController);
 var token=""
 
 app.get("/check", (req, res) => {
