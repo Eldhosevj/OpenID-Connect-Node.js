@@ -1,9 +1,12 @@
 //const base64url = require("base64url");
-var cors = require('cors')
-const express = require("express");
-const expressSession = require("express-session");
-var bodyParser = require('body-parser')
-const path = require("path");
+//var cors = require('cors')
+import cors from "cors"
+//const express = require("express");
+import express from "express"
+//const expressSession = require("express-session");
+//var bodyParser = require('body-parser')
+import bodyParser from "body-parser"
+//const path = require("path");
 //const indexController = require("./index");
 //const userController = require("./user");
 
@@ -20,8 +23,8 @@ const app = express();
 app.use(cors())
 app.use(bodyParser.json())
 //app.use(expressSession(session));
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
+// app.set("views", path.join(__dirname, "views"));
+// app.set("view engine", "ejs");
 //app.use("/", indexController);
 var token=""
 
