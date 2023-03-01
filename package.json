@@ -17,7 +17,8 @@
     "express-oauth-jwt": "^2.0.1",
     "express-session": "^1.17.3",
     "passport": "^0.6.0",
-    "passport-curity": "^1.1.1"
+    "passport-curity": "^1.1.1",
+    "passport-openidconnect": "^0.1.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
