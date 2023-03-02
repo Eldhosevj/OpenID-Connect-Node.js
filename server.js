@@ -3,15 +3,17 @@
 import cors from "cors"
 //const express = require("express");
 import express from "express"
+import axios from "axios";
 //const expressSession = require("express-session");
 //var bodyParser = require('body-parser')
 import bodyParser from "body-parser"
 //const path = require("path");
 //const indexController = require("./index");
 //const userController = require("./user");
+let formData = new FormData(); 
 
 //const { getConfiguredPassport, passportController } = require("./passport");
-
+var token=token?token:[]
 const app = express();
 
 // const session = {
@@ -20,16 +22,15 @@ const app = express();
 //   resave: false,
 //   saveUninitialized: false,
 // };
+// app.use("/",(req,res)=>{
+//     req.header('Access-Control-Allow-Headers',"*");
+// })
 app.use(cors())
 app.use(bodyParser.json())
-//app.use(expressSession(session));
-// app.set("views", path.join(__dirname, "views"));
-// app.set("view engine", "ejs");
-//app.use("/", indexController);
-var token=""
 
-app.get("/check", (req, res) => {
-    const getToken = async () => {
+
+app.get("/check",  async (req, res) => {
+  try{  
       const clientId = "fsams.ro";
 
       const clientSecret = "secret";
@@ -63,19 +64,20 @@ app.get("/check", (req, res) => {
       const tokenData = await response.json();
 
     
-      token=tokenData.access_token
+      token.push(tokenData.access_token)
+
       res.json({toaken:tokenData.access_token})
-    };
-    getToken()
+  }
+  catch(error){
+    res.send("error")
+  }
+   
   });
 
-  app.get("/session",(req,res)=>{
-    console.log(token,"session")
-    const getApiData = async () => {
-        const apiUrl = 'https://your-api.com/data';
-        const bearerToken = token;
+  app.get("/session",async(req,res)=>{
       try{
-        
+        const apiUrl = 'https://fs-tnr-tps-dev-api.azurewebsites.net/api/DocumentManagement/GetLast30DaysDocumentRequests';
+        const bearerToken = token[token.length-1];
         const response = await fetch(apiUrl, {
             method: 'GET',
             headers: {
@@ -84,30 +86,68 @@ app.get("/check", (req, res) => {
             }
           });
         
-         
-        
           const responseData = await response.json();
-         // res.json({responseData:JSON.stringify(responseData)})
-         res.send("verified")
+          res.json({responseData:responseData})
+         //res.send("verified")
       }catch(err){
         res.send("error")
       }
-       
-      
-      }
-      getApiData()
-  })
 
-// (async () => {
-//   const passport = await getConfiguredPassport();
-//   app.use(passport.initialize());
-//   app.use(passport.session());
-//   app.use("/", passportController);
-  
-
-//   app.use("/user", userController);
  
-// })();
+})
+
+
+
+
+app.get("/get",async(req,res)=>{
+    try{
+   const apiUrl = 'https://fs-tnr-tps-dev-api.azurewebsites.net/api/DocumentManagement/GetWorkOrders';
+   const bearerToken = token[token.length-1];
+   let formData = new FormData(); 
+
+   formData.append("sort", "");  
+   formData.append('page', 1);
+   formData.append('pageSize',25);
+   formData.append('group',"");
+   formData.append('filter',"");
+   formData.append('SearchColumn', "VIN");
+   formData.append('SearchTextField',"");
+   formData.append('SelectedWorkOrderStatus', '1%2C2%2C3%2C4');
+   formData.append('StartFromDate', "11/30/2022");
+   formData.append('StartToDate', "02/23/2023");
+   formData.append('Search',true);
+   formData.append('DMVState', "",);
+   formData.append('Customer', "");
+   formData.append("TrackingNumber","");
+   formData.append('CreatedUser', "");
+   formData.append('DocumentTypeCode',"");
+   formData.append('SentToSVRS', 2);
+   formData.append('SentToWIP', 2);
+
+
+
+
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 
+                'Authorization': `Bearer ${bearerToken}`,
+                'content-type': 'multipart/form-data',
+            },
+            body:formData
+          });
+        
+          const responseData = await response.json();
+          res.json({responseData:responseData})
+         //res.send(response)
+      }catch(err){
+        res.send("error")
+      }
+   
+  
+   
+})
+
 app.listen(3000, () => {
     console.log("Server started and listening on port 3000");
   });
